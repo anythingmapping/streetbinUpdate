@@ -16,7 +16,7 @@ class FixedAssets():
         
         
         #This is a bad feature and needs to be fixed asap
-        self.numberOfAssets = 715 #713 is the numer of bins currently serviced
+        #self.numberOfAssets = 715 #713 is the numer of bins currently serviced
 
 
 
@@ -121,19 +121,18 @@ class FixedAssets():
         
         #UPDATE DAYINT IF YOU WANT AN UPDATE FOR TODAYS DAY    format(days[(int(dayInt))+1]),
         # -1 sets this up for today
-        payload = {"Where" : "{}Collect='Yes'".format(days[(int(dayInt))-1]),
+        payload = {"Where" : "{}Collect='Yes'".format(days[(int(dayInt))]),
                         "f": "json",
                         "returnIdsOnly": "True",
                         "token": self.token
                         }
-        print ("calcualation are based on day {} +1").format(dayInt)
+        print("calcualation are based on day {}").format(days[(int(dayInt))])
 
         payloadEncoded = urllib.urlencode(payload)
         result = urllib.urlopen(url, payloadEncoded).read()
         queryReturn =  json.loads(result)
         print ("This is the payload update the collection to Today return:")
         print queryReturn
-        
         featList = queryReturn['objectIds']
         print featList
         
@@ -142,7 +141,7 @@ class FixedAssets():
         
         for f in featList:
             #print f
-            feat = {"attributes" : {"OBJECTID" : f, "CollectToday": "Yes"}}
+            feat = {"attributes": {"OBJECTID": f, "CollectToday": "Yes"}}
             updateList.append(feat)
         print ("we're updating todays to do list")
         print len(updateList)
@@ -158,17 +157,17 @@ class FixedAssets():
 
     def resetFixedAsset(self, numberOfAssets):
         """ method to reset everything to neutral before applying logic """
-        self.numberOfAssets
+
         self.url = self.fixedBinUrl + '/0/updateFeatures'
         self.updateList = []
         
-        for i in self.numberOfAssets:
-            self.feat = {"attributes" : {"OBJECTID" : i,"Done": "No", "CollectToday": "No"}}
+        for i in numberOfAssets:
+            self.feat = {"attributes" : {"OBJECTID": i, "Done": "No", "CollectToday": "No"}}
             self.updateList.append(self.feat)
-        
+
         #{"f": "json", "features": } is added to get a json return 
         self.payload = {"f": "json", "features": self.updateList, "token": self.token}
         self.payloadEncoded = urllib.urlencode(self.payload)
         self.result = urllib.urlopen(self.url,self.payloadEncoded).read()
         self.queryReturn = json.loads(self.result)
-        print self.queryReturn
+        #print self.queryReturn
